@@ -1,45 +1,46 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { Tabs } from "expo-router";
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { Platform } from "react-native";
+import { View } from "react-native";
+import { useEffect } from "react";
+import { useSession } from "@/hook/ctx";
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+export default function TabLayout(){
+  
+  const {session,verify} = useSession();
+    
+  const check = async()=>{
+   await verify(session);
+  }
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  useEffect(()=>{
+    check();
+  },[session]);
+  
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+    return(
+
+        <Tabs screenOptions={{
+            // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+            headerShown: false,
+            // tabBarButton: HapticTab,
+            // tabBarBackground: (()=> "#000"),
+            tabBarStyle: Platform.select({
+              ios: {
+              
+                position: 'absolute',
+              },
+              default: {},
+            }),
+          }}>
+            <Tabs.Screen name="home" options={{
+                tabBarIcon:({color,size,focused})=><AntDesign name="home" size={size} color={color} />
+                }}/>
+            <Tabs.Screen name="search" options={{}}/>
+            <Tabs.Screen name="downloads" options={{}}/>
+            <Tabs.Screen name="share" options={{}}/>
+            <Tabs.Screen name="settings" options={{}}/>
+        </Tabs>
+
+    )
 }
